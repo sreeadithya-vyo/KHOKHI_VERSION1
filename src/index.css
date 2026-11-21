@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+/*
+ * KHOKHI design system: "lit windows".
+ * Every window in a city is someone's room; KHOKHI lights the right ones.
+ *
+ * Palette (flat fields, no gradients):
+ *   nila    deep indigo ink   - primary, text, dark bands          (brand-600 / ink)
+ *   chuna   cool lilac-white  - the wall everything sits on        (canvas)
+ *   haldi   turmeric yellow   - the lit window, the one hot accent (never text on light)
+ *   gulabi  Jaipur-door pink  - colour fields and soft emphasis
+ * Pages use these utilities (bg-ink, bg-haldi, text-ink-soft, rounded-card ...), never raw hex.
+ */
+@theme {
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Brand ramp: indigo, ending at the ink. 600 is the primary (buttons, rings, active states). */
+  --color-brand-50: #f3f1fb;
+  --color-brand-100: #e5e1f5;
+  --color-brand-200: #ccc6ea;
+  --color-brand-300: #aea5d8;
+  --color-brand-400: #8479be;
+  --color-brand-500: #51468f;
+  --color-brand-600: #15133b;
+  --color-brand-700: #0f0e2c;
+  --color-brand-800: #0a0921;
+  --color-brand-900: #060516;
+
+  /* Accents */
+  --color-haldi: #ffb81c;
+  --color-haldi-soft: #ffe8a8;
+  --color-haldi-deep: #e69f00;
+  --color-gulabi: #f6b9cb;
+  --color-gulabi-soft: #fce3eb;
+  --color-gulabi-deep: #d9457a;
+  /* Lit-window indigo: the dark facade tones */
+  --color-dusk: #211e57;
+  --color-dusk-deep: #1a1848;
+
+  /* Surfaces and text */
+  --color-canvas: #efedf7;
+  --color-surface: #ffffff;
+  --color-line: #d9d5eb;
+  --color-ink: #15133b;
+  --color-ink-soft: #3b3866;
+  --color-muted: #55527a;
+
+  /* Status */
+  --color-success: #0b6b4b;
+  --color-success-soft: #d3f1e3;
+  --color-warning: #7a4d00;
+  --color-warning-soft: #ffe6a3;
+  --color-danger: #b3123f;
+  --color-danger-soft: #ffdce6;
+  --color-info: #2f3ba8;
+  --color-info-soft: #e0e3ff;
+
+  /* Radius: controls are pills, cards are large, arches are their own shape */
+  --radius-control: 0.875rem;
+  --radius-card: 1.5rem;
+  --radius-pill: 999px;
+
+  /* Indigo-tinted shadows */
+  --shadow-card: 0 1px 2px rgb(21 19 59 / 0.05), 0 6px 20px rgb(21 19 59 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(21 19 59 / 0.06), 0 20px 48px rgb(21 19 59 / 0.16);
+
+  /* Type scale */
+  --text-hero: clamp(2.75rem, 0.8rem + 9vw, 7rem);
+  --text-hero--line-height: 0.94;
+  --text-hero--letter-spacing: -0.045em;
+  --text-display: clamp(2.5rem, 1rem + 5.2vw, 4.75rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.04em;
+  --text-h1: clamp(2rem, 1.2rem + 2.4vw, 2.875rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.035em;
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas font-sans text-body text-ink antialiased;
+    font-optical-sizing: auto;
+  }
+  /* Headlines use the extended width of the variable face; body stays at normal width. */
+  h1,
+  h2 {
+    font-stretch: 112%;
+  }
+  h3 {
+    font-stretch: 104%;
+  }
+  ::selection {
+    background: var(--color-haldi);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 3px;
+  }
+  /* On dark fields the focus ring switches to the lit-window yellow. */
+  .on-dark :focus-visible {
+    outline-color: var(--color-haldi);
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes khokhi-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* The arch: doorway / jharokha. Used for avatars, media and panels. */
+@utility arch {
+  border-top-left-radius: 999px;
+  border-top-right-radius: 999px;
+}
+
+/* Scroll-in for app lists (IntersectionObserver in <Reveal/>). One calm rise, staggered by --reveal-delay. */
+.reveal {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms);
+}
+.reveal[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Landing hero: the match ring sweeps to its score. */
+@keyframes khokhi-ring {
+  from {
+    stroke-dashoffset: var(--ring-full);
+  }
+}
+@keyframes khokhi-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-ring {
+    animation: khokhi-ring 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s both;
+  }
+  .marquee-track {
+    animation: khokhi-marquee 38s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
